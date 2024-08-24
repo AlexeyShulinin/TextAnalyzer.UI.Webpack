@@ -10,14 +10,15 @@ const VENDOR_LIBS = [
 ];
 
 module.exports = {
-  mode: "development",
   entry: {
-    bundle: "./src/index.tsx",
+    bundle: './src/index.tsx',
     vendor: VENDOR_LIBS,
   },
   output: {
-    filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
+    filename: "[name].[hash].js",
+    chunkFilename: "[name].[hash].js",
+    publicPath: "auto",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".css"],
@@ -27,7 +28,16 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        use: "babel-loader",
+        loader: "babel-loader",
+        options: {
+          babelrc: false,
+          presets: [
+            "@babel/preset-env",
+            "@babel/preset-react",
+            "@babel/preset-typescript",
+          ],
+          plugins: ["@babel/plugin-syntax-dynamic-import"],
+        },
       },
       {
         test: /\.css$/,
@@ -39,13 +49,16 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
+	// new webpack.DefinePlugin({
+	// 	'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+	// }),
   ],
-  devServer: {
-    port: 9000,
-  },
   performance: {
     hints: false,
     maxEntrypointSize: 512000,
     maxAssetSize: 512000,
+  },
+  optimization: {
+    splitChunks: { chunks: "all" },
   },
 };
