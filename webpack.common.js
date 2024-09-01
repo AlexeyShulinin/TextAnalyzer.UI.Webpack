@@ -19,6 +19,7 @@ module.exports = {
     filename: "[name].[hash].js",
     chunkFilename: "[name].[hash].js",
     publicPath: "auto",
+    clean: true,
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".css"],
